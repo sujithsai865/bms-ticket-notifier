@@ -522,7 +522,12 @@ def filter_shows(
 def load_state():
     try:
         with open(STATE_FILE, encoding="utf-8") as file:
-            state = json.load(file)
+            content = file.read().strip()
+
+        if not content:
+            return {}
+
+        state = json.loads(content)
 
         if not isinstance(state, dict):
             raise ValueError("State must be a JSON object.")
@@ -532,9 +537,9 @@ def load_state():
     except FileNotFoundError:
         return {}
 
-    except (json.JSONDecodeError, ValueError) as error:
+    except json.JSONDecodeError as error:
         raise RuntimeError(
-            f"State file is invalid: {error}"
+            f"State file contains invalid JSON: {error}"
         )
 
 
