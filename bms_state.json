@@ -1,1 +1,22 @@
+def load_state():
+    try:
+        with open(STATE_FILE, encoding="utf-8") as file:
+            content = file.read().strip()
 
+        if not content:
+            return {}
+
+        state = json.loads(content)
+
+        if not isinstance(state, dict):
+            raise ValueError("State must be a JSON object.")
+
+        return state
+
+    except FileNotFoundError:
+        return {}
+
+    except json.JSONDecodeError as error:
+        raise RuntimeError(
+            f"State file contains invalid JSON: {error}"
+        )
